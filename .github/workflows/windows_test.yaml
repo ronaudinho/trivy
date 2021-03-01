@@ -1,0 +1,47 @@
+name: Windows Test
+on: push
+jobs:
+  test:
+    name: Test
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.16'
+    - run: go version
+
+    - name: Run unit tests
+      run: go test -v -short -coverprofile="coverage.txt" -covermode=atomic ./...
+
+  integration:
+    name: Integration Test
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.16'
+    - run: go version
+
+    - name: Check out assets for integration tests
+      run: git clone https://github.com/aquasecurity/trivy-test-images.git test/integration/testdata/fixtures
+
+    - name: Run integration tests
+      run: go test -v -tags=integration ./integration/...
+
+  build-test:
+    name: Build Test
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.16'
+    - run: go version
+
+    - name: Run unit tests
+      run: go build ./cmd/trivy/
