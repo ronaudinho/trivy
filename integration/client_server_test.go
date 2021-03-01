@@ -550,13 +550,13 @@ func setupClient(t *testing.T, c args, addr string, cacheDir string, golden stri
 		osArgs = append(osArgs, []string{"--token", c.ClientToken, "--token-header", c.ClientTokenHeader}...)
 	}
 	if c.Input != "" {
-		osArgs = append(osArgs, []string{"--input", c.Input}...)
+		osArgs = append(osArgs, []string{"--input", filepath.Clean(c.Input)}...)
 	}
 
 	// Setup the output file
 	var outputFile string
 	if *update {
-		outputFile = golden
+		outputFile = filepath.Clean(golden)
 	} else {
 		output, _ := ioutil.TempFile("", "integration")
 		assert.Nil(t, output.Close())
